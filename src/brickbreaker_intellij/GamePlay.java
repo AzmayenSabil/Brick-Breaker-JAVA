@@ -28,10 +28,12 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
     private MapGenerator map;
 
     public GamePlay(){
-        map = new MapGenerator(3,7);
+        map = new MapGenerator(3,7); //generating map by calling the mapgenerator class after every delay
         addKeyListener(this);
+
         setFocusable(true);
-        setFocusTraversalKeysEnabled(false); // dont know what it does
+        setFocusTraversalKeysEnabled(false); // https://stackoverflow.com/questions/51237598/what-is-the-use-of-setfocustraversalkeysenabled/51344022
+
         timer = new Timer(delay, this);
         timer.start();
     }
@@ -42,6 +44,9 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
      */
     @Override
     public void paint(Graphics g){
+
+        //-------------drawing elements----------------//
+
         //background
         g.setColor(Color.BLACK);
         g.fillRect(1, 1, 692, 592);
@@ -53,7 +58,7 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         g.setColor(Color.yellow);
         g.fillRect(0,0,3,592);
         g.fillRect(0,0,692,3);
-        g.fillRect(691,0,3,592);
+        g.fillRect(692,0,3,592);
 
         //scores
         g.setColor(Color.white);
@@ -68,6 +73,8 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         g.setColor(Color.yellow);
         g.fillOval(ballPosX, ballPosY, 20,20);
 
+        //-----------------drawing elements part ended----------------------------//
+
         if(totalBricks <= 0){
             play = false;
             ballXDir = 0;
@@ -81,7 +88,7 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
             g.drawString("Press ENTER TO restart",250,350);
         }
 
-        if(ballPosY > 570){
+        if(ballPosY > 570){ //why 570 couldn't figure it out :( but a guess is thats the quantity of working pixel
             play = false;
             ballXDir = 0;
             ballYDir = 0;
@@ -100,9 +107,13 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        timer.start(); // dont know what it does
 
-        if(play){  /* how the coordinates are working */
+
+        timer.start(); // A Swing timer fires one or more action events after a specified delay
+
+        if(play){  /* how the coordinates are working ?? */
+
+            //-------------- ball intersecting with the bricks -------------------- ///
 
             if(new Rectangle(ballPosX, ballPosY, 20, 20).intersects(new Rectangle(playerX, 550, 100, 8))){
                 ballYDir = -ballYDir;
@@ -111,8 +122,8 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
             A: for(int i=0; i < map.map.length; i++){
                 for(int j=0; j < map.map[0].length; j++){
                     if(map.map[i][j] > 0){
-                        int brickX = j*map.brickWidth + 80;
-                        int brickY = j*map.brickHeight + 50;
+                        int brickX = (j*map.brickWidth) + 80;
+                        int brickY = (i*map.brickHeight) + 50;
                         int brickWidth = map.brickWidth;
                         int brickHeight = map.brickHeight;
 
@@ -125,6 +136,7 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
                             totalBricks--;
                             score += 5;
 
+                            //------this part has to be reviewed-----------//
                             if(ballPosX+19 <= brickRect.x || ballPosX+1 >= brickRect.x+brickRect.width){
                                 ballXDir = -ballXDir;
                             }
@@ -133,11 +145,17 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
                             }
 
                             break A;
+
+                            //---------------------------------------------//
                         }
 
                     }
                 }
             }
+
+            //-------------------ball intersecting with the bricks -------------------------------//
+
+
 
             ballPosX += ballXDir;
             ballPosY += ballYDir;
@@ -156,10 +174,14 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         repaint(); // dont know what it does
     }
 
+
+    //-------------------unused code------------------///
     @Override
-    public void keyTyped(KeyEvent keyEvent) { /*we dont need this*/}
+    public void keyTyped(KeyEvent keyEvent) { /*we don't need this*/}
     @Override
-    public void keyReleased(KeyEvent keyEvent) { /*we dont need this*/}
+    public void keyReleased(KeyEvent keyEvent) { /*we don't need this*/}
+    //-----------------------------------------------///
+
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
@@ -180,6 +202,7 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
             }
         }
 
+        //------------to restart the game --------------//
         if(keyEvent.getKeyCode() == keyEvent.VK_ENTER){
             if(!play){
                 play = true;
@@ -195,6 +218,10 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
                 repaint();
             }
         }
+
+        //------------------------------------------//
+
+
     }
 
     public void moveRight(){
