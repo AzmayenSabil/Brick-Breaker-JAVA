@@ -1,6 +1,5 @@
 package brickbreaker_intellij;
 
-//import brickbreaker_intellij.GamePlay;
 import javax.swing.*;
 
 public class Main {
